@@ -140,8 +140,10 @@ class Controller:
         print 'get jpg image'
         # self.view.canvas_photo = ImageTk.PhotoImage(file = image_path)
         # self.view.canvas.create_image(0, 0, image=image_path, anchor=NW)
-        self.view.canvas_im=Image.frombytes('L', (frame.shape[1],frame.shape[0]), frame.astype('b').tostring())
-        self.view.canvas_photo = ImageTk.PhotoImage(image=self.view.canvas_im)
+        # self.view.canvas_im=Image.frombytes('L', (frame.shape[1],frame.shape[0]), frame.astype('b').tostring())
+        cv2image = cv2.cvtColor(frame, cv2.COLOR_BGR2RGBA)  # convert colors from BGR to RGBA
+        self.view.current_frame = Image.fromarray(cv2image)
+        self.view.canvas_photo = ImageTk.PhotoImage(image=self.view.current_frame)
         self.view.canvas.create_image(0, 0, image=self.view.canvas_photo, anchor=NW)
 
 

@@ -13,7 +13,7 @@ class View:
 
     def create_window(self, root):
         self.master = root
-        self.master.geometry('{}x{}'.format(1200, 600))
+        self.master.geometry('{}x{}'.format(1200, 700))
         self.master.title(LABEL_SPOT)
         self.master.configure(background=COLOR_GRAY)
 
@@ -82,7 +82,7 @@ class View:
     def create_center_frame_widgets(self, frame):
         print 'this is center frame'
         # layout the widgets in the center frame
-        self.canvas = Canvas(frame, width=400, height=400, bg=COLOR_GRAY, highlightbackground=COLOR_GRAY)
+        self.canvas = Canvas(frame, width=500, height=500, bg=COLOR_GRAY, highlightbackground=COLOR_GRAY)
         # self.canvas.place(x=-2,y=-2)
         self.canvas.grid(row=0, column=0)
 
