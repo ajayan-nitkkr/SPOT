@@ -32,7 +32,7 @@ class LocalVideoClient(object):
         self.crop_info = crop_info
         print(self.crop_info)
 
-    def run(self):
+    def run(self, callback_controller):
         """ 
             Process the video at video_path
             Add the resulting annotated images in self.q, refer start_client.py: annotate_image()
@@ -42,8 +42,9 @@ class LocalVideoClient(object):
         os.mkdir('results')
         print(" Starting processing video at " + str(self.video_path) + " on local server")
         print(self.crop_info)
-        faster_rcnn_local_121.tools.run_faster_rcnn.main(self.crop_info, self.video_path, self.q, self.sleep_time, self.display)
+        faster_rcnn_local_121.tools.run_faster_rcnn.main(self.crop_info, self.video_path, self.q, self.sleep_time, self.display, callback_controller)
         #self.test_results() ## FOR TESTING PURPOSE
+        print ("returned")
 
     def test_results(self):
         i = 0
@@ -63,8 +64,8 @@ def get_client():
     global local_vh
     return local_vh
 
-def start_video_client():
+def start_video_client(callback_controller):
     print("start video client")
     global local_vh
-    local_vh.run()
+    local_vh.run(callback_controller)
 

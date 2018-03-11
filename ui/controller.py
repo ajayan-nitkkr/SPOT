@@ -165,7 +165,7 @@ class Controller:
             local_vh.update_crop_info(crop_info)
             # eventlet.spawn(start_local_client.start_video_client)
             # eventlet.spawn(self.listen_local)
-            start_local_client.start_video_client()
+            start_local_client.start_video_client(self.callback)
 
         else:
             """ Initiate processing for remote (Azure Advanced) server """
@@ -177,16 +177,9 @@ class Controller:
         print ("event spawn finished")
         # return 'True'
 
-    # def listen_local(self):
-    #     print("listen_local")
-    #     global local_vh
-    #     while True:
-    #         curr = int(round(time.time() * 1000))
-    #         item = local_vh.q.get()
-    #         testIm = cv2.imread(item)
-    #         while testIm is None:
-    #             testIm = cv2.imread(item)
-    #         # socketio.emit('newimage', {'data': item + '?l=' + str(curr)}, namespace='/imagestream')
-    #         print("Sent " + item)
-    #         local_vh.q.task_done()
-    #         ## TODO: cleanup
+    def callback(self, frame):
+        print("update frame")
+        cv2image = cv2.cvtColor(frame, cv2.COLOR_BGR2RGBA)  # convert colors from BGR to RGBA
+        self.view.current_frame = Image.fromarray(cv2image)
+        self.view.canvas_photo = ImageTk.PhotoImage(image=self.view.current_frame)
+        self.view.canvas.create_image(0, 0, image=self.view.canvas_photo, anchor=NW)
