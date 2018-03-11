@@ -7,7 +7,7 @@ from string_values import *
 
 class View:
     def __init__(self, root):
-        print 'initializing view...'
+        # print 'initializing view...'
         self.create_window(root)
         self.create_containers()
 

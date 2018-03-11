@@ -28,7 +28,6 @@ class Controller:
         self.init_client()
 
     def initialize_top_frame_controller(self, frame):
-        print 'initialize topframe controller'
         self.view.value_of_combobox_server = self.view.combobox_server.get()
         self.view.combobox_server.bind("<<ComboboxSelected>>", self.change_server)
         vcmd = frame.register(self.validate_video_path)
@@ -36,13 +35,12 @@ class Controller:
         self.view.button_process.configure(command=self.process_video_frame)
 
     def initialize_btm_frame_controller(self, frame):
-        print 'initialize btmframe controller'
         self.view.combobox_video_white_hot.bind("<<ComboboxSelected>>", self.change_video_hot)
         self.view.combobox_video_border.bind("<<ComboboxSelected>>", self.change_video_border)
         self.dict_crop_info = {}
 
     def validate_video_path(self, new_text):
-        print 'Video path:', new_text
+        # print 'Video path:', new_text
         # if not new_text:
         #     self.text_video_path = ''
         #     return True
@@ -63,26 +61,26 @@ class Controller:
             # self.get_frame()
             self.view.combobox_video_white_hot.configure(state='readonly')
             self.view.combobox_video_border.configure(state='readonly')
-            #adding new code below
+            # adding new code below
             self.preprocess_video()
 
     def change_server(self, event):
         self.view.value_of_combobox_server = self.view.combobox_server.get()
-        print 'Server:', self.view.value_of_combobox_server
+        print 'Server changed to:', self.view.value_of_combobox_server
 
     def change_video_hot(self, event):
         self.view.value_of_combobox_video_white_hot = self.view.combobox_video_white_hot.get()
-        print 'Video white hot?:', self.view.value_of_combobox_video_white_hot
-        #created the below model after debugging the existing web app model
+        print 'Video white hot option selected as:', self.view.value_of_combobox_video_white_hot
+
+        # created the below model after debugging the existing web app model
         if self.view.value_of_combobox_video_white_hot == LABEL_NO:
             self.dict_crop_info[DICT_CROP_VIDEOHOT_KEY] = True
         elif self.view.value_of_combobox_video_white_hot == LABEL_YES:
             self.dict_crop_info[DICT_CROP_VIDEOHOT_KEY] = False
-        # self.dict_crop_info[DICT_CROP_VIDEOHOT_KEY] = self.view.value_of_combobox_video_white_hot
 
     def change_video_border(self, event):
         self.view.value_of_combobox_video_border = self.view.combobox_video_border.get()
-        print 'Video borders?:', self.view.value_of_combobox_video_border
+        print 'Video border option selected as:', self.view.value_of_combobox_video_border
         self.dict_crop_info[DICT_CROP_VIDEOBORDER_KEY] = self.view.value_of_combobox_video_border
         if self.view.value_of_combobox_video_border == LABEL_NO:
             self.send_crop_info()
@@ -95,7 +93,6 @@ class Controller:
 
     def preprocess_video(self):
         # payload = json.loads(request.get_data().decode('utf-8'))
-        print 'reached preprocess_video code (the prev one)!'
         global vh, video_path, local_vh
         # try:
         #     video_path = int(payload['video_path'])
@@ -124,13 +121,12 @@ class Controller:
         # return first_img + '?r=' + str(curr)
 
     def update_canvas_frame(self, frame):
-        print 'get jpg image'
         self.view.canvas.config(width=frame.shape[1], height=frame.shape[0])
         cv2image = cv2.cvtColor(frame, cv2.COLOR_BGR2RGBA)  # convert colors from BGR to RGBA
         self.view.current_frame = Image.fromarray(cv2image)
         self.view.canvas_photo = ImageTk.PhotoImage(image=self.view.current_frame)
         self.view.canvas.create_image(0, 0, image=self.view.canvas_photo, anchor=NW)
-        self.view.master.update() #refresh page to update canvas frame
+        self.view.master.update() # refresh page to update canvas frame
 
     def send_crop_info(self):
         global vh, local_vh, server_type
@@ -154,10 +150,10 @@ class Controller:
             """ Initiate processing for remote (Azure Advanced) server """
             print("Initiating requests for remote Azure Advanced server")
 
-        print ("event spawn finished")
+        print ("event finished")
         # return 'True'
 
     def callback(self, frame):
-        print("updating new frame after callback...")
+        print("updating new frame after callback from machine learning library...")
         self.update_canvas_frame(frame)
 
