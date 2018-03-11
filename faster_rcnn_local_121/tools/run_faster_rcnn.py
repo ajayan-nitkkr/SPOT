@@ -191,7 +191,7 @@ def capture_and_tag(sess, net, preprocessDict, video, q, sleepTime, display, cal
                     frame = vis_detections(frame, cls, newDets[1:], display, thresh=cfg.TEST.CONF_THRESH)
                     # file_name = file_path+str(i)+'.jpg'
                     # cv2.imwrite(file_name, frame)
-                    print('image about to be added to queue')
+                    # print('image about to be added to queue')
                     # q.put(file_name)
 
                     # adding new code below (Ajay)
@@ -199,7 +199,7 @@ def capture_and_tag(sess, net, preprocessDict, video, q, sleepTime, display, cal
 
                     time.sleep(sleepTime)
                     
-                    print('image added to queue')
+                    # print('image added to queue')
                     i += 1
 #                cv2.imshow('annotations', frame)
 #                cv2.waitKey(1)

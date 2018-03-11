@@ -35,10 +35,6 @@ class Controller:
         self.view.entry_video_path.configure(validate="key", validatecommand=(vcmd, '%P'))
         self.view.button_process.configure(command=self.process_video_frame)
 
-    # def initialize_center_frame_controller(self, frame):
-    #     print 'initialize centerframe controller'
-    #     self.view.canvas.bind("<Configure>", self.resize_frame_dimensions)
-
     def initialize_btm_frame_controller(self, frame):
         print 'initialize btmframe controller'
         self.view.combobox_video_white_hot.bind("<<ComboboxSelected>>", self.change_video_hot)
@@ -77,7 +73,11 @@ class Controller:
     def change_video_hot(self, event):
         self.view.value_of_combobox_video_white_hot = self.view.combobox_video_white_hot.get()
         print 'Video white hot?:', self.view.value_of_combobox_video_white_hot
-        self.dict_crop_info[DICT_CROP_VIDEOHOT_KEY] = self.view.value_of_combobox_video_white_hot
+        if self.view.value_of_combobox_video_white_hot == LABEL_NO:
+            self.dict_crop_info[DICT_CROP_VIDEOHOT_KEY] = True
+        elif self.view.value_of_combobox_video_white_hot == LABEL_YES:
+            self.dict_crop_info[DICT_CROP_VIDEOHOT_KEY] = False
+        # self.dict_crop_info[DICT_CROP_VIDEOHOT_KEY] = self.view.value_of_combobox_video_white_hot
 
     def change_video_border(self, event):
         self.view.value_of_combobox_video_border = self.view.combobox_video_border.get()
@@ -85,9 +85,6 @@ class Controller:
         self.dict_crop_info[DICT_CROP_VIDEOBORDER_KEY] = self.view.value_of_combobox_video_border
         if self.view.value_of_combobox_video_border == LABEL_NO:
             self.send_crop_info()
-
-    # def resize_frame_dimensions(self, event):
-
 
     ##new methods as per the previous app
     def init_client(self):
@@ -133,7 +130,6 @@ class Controller:
         self.view.canvas_photo = ImageTk.PhotoImage(image=self.view.current_frame)
         self.view.canvas.create_image(0, 0, image=self.view.canvas_photo, anchor=NW)
         self.view.master.update() #refresh page to update canvas frame
-
 
     def send_crop_info(self):
         global vh, local_vh, server_type
