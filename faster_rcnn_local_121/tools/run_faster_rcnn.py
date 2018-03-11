@@ -147,6 +147,7 @@ def capture_and_tag(sess, net, preprocessDict, video, q, sleepTime, display, cal
                 # Process frames
                 if invert:
                     frame = 255 - frame
+
                 scores_all, boxes_all = process(sess, net, frame)
 
                 # Filter predicted boxes based on bounding boxes from previous frame
@@ -186,13 +187,14 @@ def capture_and_tag(sess, net, preprocessDict, video, q, sleepTime, display, cal
                                 newDets = np.vstack((newDets, det))
                     else:
                         newDets = dets
-                    frame = vis_detections(frame, cls, newDets[1:], display, thresh=cfg.TEST.CONF_THRESH)
-                    file_name = file_path+str(i)+'.jpg'
-                    cv2.imwrite(file_name, frame)
-                    print('image about to be added to queue')
-                    q.put(file_name)
 
-                    #adding new code below (Ajay)
+                    frame = vis_detections(frame, cls, newDets[1:], display, thresh=cfg.TEST.CONF_THRESH)
+                    # file_name = file_path+str(i)+'.jpg'
+                    # cv2.imwrite(file_name, frame)
+                    print('image about to be added to queue')
+                    # q.put(file_name)
+
+                    # adding new code below (Ajay)
                     callback_controller(frame)
 
                     time.sleep(sleepTime)

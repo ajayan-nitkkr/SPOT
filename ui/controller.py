@@ -178,8 +178,10 @@ class Controller:
         # return 'True'
 
     def callback(self, frame):
-        print("update frame")
+        print("updating new frame by callback...")
         cv2image = cv2.cvtColor(frame, cv2.COLOR_BGR2RGBA)  # convert colors from BGR to RGBA
         self.view.current_frame = Image.fromarray(cv2image)
         self.view.canvas_photo = ImageTk.PhotoImage(image=self.view.current_frame)
         self.view.canvas.create_image(0, 0, image=self.view.canvas_photo, anchor=NW)
+        self.view.master.update() #refresh page to update canvas frame
+
