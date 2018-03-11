@@ -73,6 +73,7 @@ class Controller:
     def change_video_hot(self, event):
         self.view.value_of_combobox_video_white_hot = self.view.combobox_video_white_hot.get()
         print 'Video white hot?:', self.view.value_of_combobox_video_white_hot
+        #created the below model after debugging the existing web app model
         if self.view.value_of_combobox_video_white_hot == LABEL_NO:
             self.dict_crop_info[DICT_CROP_VIDEOHOT_KEY] = True
         elif self.view.value_of_combobox_video_white_hot == LABEL_YES:
