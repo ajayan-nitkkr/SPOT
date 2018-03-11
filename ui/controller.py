@@ -28,6 +28,7 @@ class Controller:
 
     def initialize_top_frame_controller(self, frame):
         print 'initialize topframe controller'
+        self.view.value_of_combobox_server = self.view.combobox_server.get()
         self.view.combobox_server.bind("<<ComboboxSelected>>", self.change_server)
         vcmd = frame.register(self.validate_video_path)
         self.view.entry_video_path.configure(validate="key", validatecommand=(vcmd, '%P'))
