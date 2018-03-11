@@ -91,12 +91,12 @@ class Controller:
     def change_video_hot(self, event):
         self.view.value_of_combobox_video_white_hot = self.view.combobox_video_white_hot.get()
         print 'Video white hot?:', self.view.value_of_combobox_video_white_hot
-        self.dict_crop_info['video_hot'] = self.view.value_of_combobox_video_white_hot
+        self.dict_crop_info['invert'] = self.view.value_of_combobox_video_white_hot
 
     def change_video_border(self, event):
         self.view.value_of_combobox_video_border = self.view.combobox_video_border.get()
         print 'Video borders?:', self.view.value_of_combobox_video_border
-        self.dict_crop_info['video_border'] = self.view.value_of_combobox_video_border
+        self.dict_crop_info['crop'] = self.view.value_of_combobox_video_border
         if self.view.value_of_combobox_video_border == 'No':
             self.send_crop_info()
 
@@ -122,7 +122,7 @@ class Controller:
         vh.app_path = self.view.text_video_path
 
         # update video and app path in local client
-        local_vh.update_paths(video_path, '.')
+        local_vh.update_paths(video_path, None)
 
         cap = cv2.VideoCapture(video_path)
         # print cap.isOpened()
@@ -152,6 +152,10 @@ class Controller:
         print("sending crop info..")
 
         # payload = json.loads(request.get_data().decode('utf-8'))
+        self.dict_crop_info['cropTop'] = 0;
+        self.dict_crop_info['cropLeft'] = 0;
+        self.dict_crop_info['cropBottom'] = self.view.current_frame.height;
+        self.dict_crop_info['cropRight'] = self.view.current_frame.width;
         crop_info = self.dict_crop_info
         server_type = self.view.value_of_combobox_server
 
@@ -159,8 +163,9 @@ class Controller:
             """ TODO :initiate processing for local server """
             print("Initiating requests for local server")
             local_vh.update_crop_info(crop_info)
-            eventlet.spawn(start_local_client.start_video_client)
-            eventlet.spawn(self.listen_local)
+            # eventlet.spawn(start_local_client.start_video_client)
+            # eventlet.spawn(self.listen_local)
+            start_local_client.start_video_client()
 
         else:
             """ Initiate processing for remote (Azure Advanced) server """
@@ -172,16 +177,16 @@ class Controller:
         print ("event spawn finished")
         # return 'True'
 
-    def listen_local(self):
-        print("listen_local")
-        global local_vh
-        while True:
-            curr = int(round(time.time() * 1000))
-            item = local_vh.q.get()
-            testIm = cv2.imread(item)
-            while testIm is None:
-                testIm = cv2.imread(item)
-            # socketio.emit('newimage', {'data': item + '?l=' + str(curr)}, namespace='/imagestream')
-            print("Sent " + item)
-            local_vh.q.task_done()
-            ## TODO: cleanup
+    # def listen_local(self):
+    #     print("listen_local")
+    #     global local_vh
+    #     while True:
+    #         curr = int(round(time.time() * 1000))
+    #         item = local_vh.q.get()
+    #         testIm = cv2.imread(item)
+    #         while testIm is None:
+    #             testIm = cv2.imread(item)
+    #         # socketio.emit('newimage', {'data': item + '?l=' + str(curr)}, namespace='/imagestream')
+    #         print("Sent " + item)
+    #         local_vh.q.task_done()
+    #         ## TODO: cleanup
