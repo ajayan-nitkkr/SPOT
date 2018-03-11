@@ -82,6 +82,11 @@ class Controller:
         self.view.value_of_combobox_video_border = self.view.combobox_video_border.get()
         print 'Video border option selected as:', self.view.value_of_combobox_video_border
         self.dict_crop_info[DICT_CROP_VIDEOBORDER_KEY] = self.view.value_of_combobox_video_border
+
+        # set deafault option for video hot if nothing selected there
+        if DICT_CROP_VIDEOHOT_KEY not in self.dict_crop_info:
+            self.dict_crop_info[DICT_CROP_VIDEOHOT_KEY] = False
+
         if self.view.value_of_combobox_video_border == LABEL_NO:
             self.send_crop_info()
 
