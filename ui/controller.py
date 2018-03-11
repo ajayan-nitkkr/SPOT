@@ -16,6 +16,7 @@ import start_client
 import start_local_client
 import cv2
 import time
+from string_values import *
 
 
 class Controller:
@@ -80,13 +81,13 @@ class Controller:
     def change_video_hot(self, event):
         self.view.value_of_combobox_video_white_hot = self.view.combobox_video_white_hot.get()
         print 'Video white hot?:', self.view.value_of_combobox_video_white_hot
-        self.dict_crop_info['invert'] = self.view.value_of_combobox_video_white_hot
+        self.dict_crop_info[DICT_CROP_VIDEOHOT_KEY] = self.view.value_of_combobox_video_white_hot
 
     def change_video_border(self, event):
         self.view.value_of_combobox_video_border = self.view.combobox_video_border.get()
         print 'Video borders?:', self.view.value_of_combobox_video_border
-        self.dict_crop_info['crop'] = self.view.value_of_combobox_video_border
-        if self.view.value_of_combobox_video_border == 'No':
+        self.dict_crop_info[DICT_CROP_VIDEOBORDER_KEY] = self.view.value_of_combobox_video_border
+        if self.view.value_of_combobox_video_border == LABEL_NO:
             self.send_crop_info()
 
     ##new methods as per the previous app
@@ -141,14 +142,14 @@ class Controller:
         print("sending crop info..")
 
         # payload = json.loads(request.get_data().decode('utf-8'))
-        self.dict_crop_info['cropTop'] = 0;
-        self.dict_crop_info['cropLeft'] = 0;
-        self.dict_crop_info['cropBottom'] = self.view.current_frame.height;
-        self.dict_crop_info['cropRight'] = self.view.current_frame.width;
+        self.dict_crop_info[DICT_CROP_CROPTOP_KEY] = 0;
+        self.dict_crop_info[DICT_CROP_CROPLEFT_KEY] = 0;
+        self.dict_crop_info[DICT_CROP_CROPBOTTOM_KEY] = self.view.current_frame.height;
+        self.dict_crop_info[DICT_CROP_CROPRIGHT_KEY] = self.view.current_frame.width;
         crop_info = self.dict_crop_info
         server_type = self.view.value_of_combobox_server
 
-        if server_type == 'Local':
+        if server_type == LABEL_LOCAL_SERVER:
             """ TODO :initiate processing for local server """
             print("Initiating requests for local server")
             local_vh.update_crop_info(crop_info)

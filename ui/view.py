@@ -51,7 +51,7 @@ class View:
 
         # create the widgets for the top frame
         self.label_server = Label(self.server_frame, text=LABEL_SERVER, bg=COLOR_GREEN)
-        self.combobox_server = ttk.Combobox(self.server_frame, values=('Local', 'Remote'), state="readonly")
+        self.combobox_server = ttk.Combobox(self.server_frame, values=(LABEL_LOCAL_SERVER, LABEL_REMOTE_SERVER), state="readonly")
         self.label_video_path = Label(self.video_path_frame, text=LABEL_VIDEO_PATH, bg=COLOR_GREEN)
         self.entry_video_path = Entry(self.video_path_frame)
         self.button_process = Button(frame, text=LABEL_PROCESS)
@@ -96,9 +96,9 @@ class View:
 
         # create the widgets for the bottom frame
         self.label_video_white_hot= Label(self.video_hot_frame, text=LABEL_VIDEO_HOT, bg=COLOR_GREEN)
-        self.combobox_video_white_hot = ttk.Combobox(self.video_hot_frame, values=('Yes', 'No'), state="readonly")
+        self.combobox_video_white_hot = ttk.Combobox(self.video_hot_frame, values=(LABEL_YES, LABEL_NO), state="readonly")
         self.label_video_border = Label(self.video_border_frame, text=LABEL_VIDEO_BORDER, bg=COLOR_GREEN)
-        self.combobox_video_border = ttk.Combobox(self.video_border_frame, values=('Yes', 'No'), state="readonly")
+        self.combobox_video_border = ttk.Combobox(self.video_border_frame, values=(LABEL_YES, LABEL_NO), state="readonly")
 
         # layout the frames inside the bottom frame
         self.video_hot_frame.grid(row=0, column=0, sticky="nsew")
