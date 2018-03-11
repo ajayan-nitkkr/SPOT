@@ -8,6 +8,7 @@ LABEL_LOCAL_SERVER = 'Local'
 LABEL_REMOTE_SERVER = 'Remote'
 LABEL_YES = 'Yes'
 LABEL_NO = 'No'
+LABEL_TERMINATE = 'Terminate'
 
 
 COLOR_GREEN = 'green'

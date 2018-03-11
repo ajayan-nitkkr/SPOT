@@ -55,6 +55,7 @@ class View:
         self.label_video_path = Label(self.video_path_frame, text=LABEL_VIDEO_PATH, bg=COLOR_GREEN)
         self.entry_video_path = Entry(self.video_path_frame)
         self.button_process = Button(frame, text=LABEL_PROCESS)
+        self.button_terminate = Button(frame, text=LABEL_TERMINATE)
 
         # layout the frames inside the top frame
         self.server_frame.grid(row=0, column=0, sticky="nsew")
@@ -66,11 +67,13 @@ class View:
         self.label_video_path.grid(row=0, column=0, sticky="nsew")
         self.entry_video_path.grid(row=0, column=1, sticky="nsew")
         self.button_process.grid(row=0, column=2, sticky="nsew")
+        self.button_terminate.grid(row=0, column=3, sticky="nsew")
 
         # assign different weights to the widgets for relative size in the top frame
         frame.grid_columnconfigure(0, weight=1, uniform="foo")
         frame.grid_columnconfigure(1, weight=3, uniform="foo")
         frame.grid_columnconfigure(2, weight=1, uniform="foo")
+        frame.grid_columnconfigure(3, weight=1, uniform="foo")
         self.video_path_frame.grid_columnconfigure(0, weight=1, uniform="foo")
         self.video_path_frame.grid_columnconfigure(1, weight=3, uniform="foo")
         # frame.grid_columnconfigure(4, weight=1, uniform="foo")

@@ -33,6 +33,7 @@ class Controller:
         vcmd = frame.register(self.validate_video_path)
         self.view.entry_video_path.configure(validate="key", validatecommand=(vcmd, '%P'))
         self.view.button_process.configure(command=self.process_video_frame)
+        self.view.button_terminate.configure(command=self.terminate_app)
 
     def initialize_btm_frame_controller(self, frame):
         self.view.combobox_video_white_hot.bind("<<ComboboxSelected>>", self.change_video_hot)
@@ -89,6 +90,29 @@ class Controller:
 
         if self.view.value_of_combobox_video_border == LABEL_NO:
             self.send_crop_info()
+
+    def terminate_app(self):
+        print('Terminating the SPOT app')
+        self.view.master.destroy()
+
+    def popup_terminate(self):
+        print('Opening popup window')
+        self.view.popwin = Toplevel()
+        self.view.popwin.geometry('{}x{}'.format(400, 100))
+        self.view.popwin.wm_title("Confirm termination")
+
+        l = Label(self.view.popwin, text="Do you want to terminate the application?")
+        l.grid(row=0, column=0)
+
+        b = Button(self.view.popwin, text="Yes", command=self.terminate_app)
+        b.grid(row=1, column=0)
+
+        # b = Button(self.view.popwin, text="No", command=self.view.popwin.destroy)
+        b = Button(self.view.popwin, text="No", command=self.close_popup_window)
+        b.grid(row=1, column=1)
+
+    def close_popup_window(self):
+        self.view.popwin.destroy()
 
     ##new methods as per the previous app
     def init_client(self):
