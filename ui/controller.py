@@ -16,9 +16,6 @@ import start_client
 import start_local_client
 import cv2
 import time
-import os
-import json
-import eventlet
 
 
 class Controller:
@@ -78,15 +75,6 @@ class Controller:
         self.view.canvas_im=Image.frombytes('L', (data.shape[1],data.shape[0]), data.astype('b').tostring())
         self.view.canvas_photo = ImageTk.PhotoImage(image=self.view.canvas_im)
         self.view.canvas.create_image(0, 0, image=self.view.canvas_photo, anchor=NW)
-
-        # # jpeg = PhotoImage(file='first.jpg')
-        # image_url = 'D:\\Research\\teamcore_project\\project-AI_for_conservation\\python-workspace-AI_for_conservation\\src\\final\\ui\\first.jpg'
-        # # image_byt = urlopen(image_url).read()
-        # # image_b64 = base64.encodestring(image_byt)
-        # # photo = PhotoImage(data=image_b64)
-        # im = Image.open(image_url)
-        # photo = ImageTk.PhotoImage(image=im)
-        # self.view.canvas.create_image(0, 0, image=photo, anchor=NW)
 
     def change_video_hot(self, event):
         self.view.value_of_combobox_video_white_hot = self.view.combobox_video_white_hot.get()
@@ -163,22 +151,17 @@ class Controller:
             """ TODO :initiate processing for local server """
             print("Initiating requests for local server")
             local_vh.update_crop_info(crop_info)
-            # eventlet.spawn(start_local_client.start_video_client)
-            # eventlet.spawn(self.listen_local)
             start_local_client.start_video_client(self.callback)
 
         else:
             """ Initiate processing for remote (Azure Advanced) server """
             print("Initiating requests for remote Azure Advanced server")
-            # vh.update_crop_info(crop_info)
-            # eventlet.spawn(start_client.start_video_client)
-            # eventlet.spawn(listen_remote)
 
         print ("event spawn finished")
         # return 'True'
 
     def callback(self, frame):
-        print("updating new frame by callback...")
+        print("updating new frame after callback...")
         cv2image = cv2.cvtColor(frame, cv2.COLOR_BGR2RGBA)  # convert colors from BGR to RGBA
         self.view.current_frame = Image.fromarray(cv2image)
         self.view.canvas_photo = ImageTk.PhotoImage(image=self.view.current_frame)

@@ -7,7 +7,7 @@ from string_values import *
 
 class View:
     def __init__(self, root):
-        print 'initialize view'
+        print 'initializing view...'
         self.create_window(root)
         self.create_containers()
 
@@ -80,17 +80,14 @@ class View:
         self.text_video_path = ''
 
     def create_center_frame_widgets(self, frame):
-        print 'this is center frame'
         # layout the widgets in the center frame
         self.canvas = Canvas(frame, width=500, height=500, bg=COLOR_GRAY, highlightbackground=COLOR_GRAY)
-        # self.canvas.place(x=-2,y=-2)
         self.canvas.grid(row=0, column=0)
 
         # assign different weights to the widgets for relative size in the center frame
         frame.grid_columnconfigure(0, weight=1, uniform="foo")
 
     def create_btm_frame_widgets(self, frame):
-        print 'this is bottom frame'
         # create frames inside top frame
         video_hot_frame_style = ttk.Style()
         video_hot_frame_style.configure('My.TFrame',background=COLOR_GREEN)
