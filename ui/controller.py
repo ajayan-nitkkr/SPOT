@@ -71,13 +71,6 @@ class Controller:
         self.view.value_of_combobox_server = self.view.combobox_server.get()
         print 'Server:', self.view.value_of_combobox_server
 
-    def get_frame(self):
-        print 'Getting video frame...'
-        data=numpy.array(numpy.random.random((400,500))*100,dtype=int)
-        self.view.canvas_im=Image.frombytes('L', (data.shape[1],data.shape[0]), data.astype('b').tostring())
-        self.view.canvas_photo = ImageTk.PhotoImage(image=self.view.canvas_im)
-        self.view.canvas.create_image(0, 0, image=self.view.canvas_photo, anchor=NW)
-
     def change_video_hot(self, event):
         self.view.value_of_combobox_video_white_hot = self.view.combobox_video_white_hot.get()
         print 'Video white hot?:', self.view.value_of_combobox_video_white_hot
@@ -122,19 +115,17 @@ class Controller:
         # first_img = 'frames/first.jpg'
         # first_img_path = os.path.join('frames/', first_img)
         # cv2.imwrite('frames', frame)
-        self.get_first_frame(frame)
+        self.update_canvas_frame(frame)
 
         # return first_img + '?r=' + str(curr)
 
-    def get_first_frame(self, frame):
+    def update_canvas_frame(self, frame):
         print 'get jpg image'
-        # self.view.canvas_photo = ImageTk.PhotoImage(file = image_path)
-        # self.view.canvas.create_image(0, 0, image=image_path, anchor=NW)
-        # self.view.canvas_im=Image.frombytes('L', (frame.shape[1],frame.shape[0]), frame.astype('b').tostring())
         cv2image = cv2.cvtColor(frame, cv2.COLOR_BGR2RGBA)  # convert colors from BGR to RGBA
         self.view.current_frame = Image.fromarray(cv2image)
         self.view.canvas_photo = ImageTk.PhotoImage(image=self.view.current_frame)
         self.view.canvas.create_image(0, 0, image=self.view.canvas_photo, anchor=NW)
+        self.view.master.update() #refresh page to update canvas frame
 
 
     def send_crop_info(self):
@@ -164,9 +155,5 @@ class Controller:
 
     def callback(self, frame):
         print("updating new frame after callback...")
-        cv2image = cv2.cvtColor(frame, cv2.COLOR_BGR2RGBA)  # convert colors from BGR to RGBA
-        self.view.current_frame = Image.fromarray(cv2image)
-        self.view.canvas_photo = ImageTk.PhotoImage(image=self.view.current_frame)
-        self.view.canvas.create_image(0, 0, image=self.view.canvas_photo, anchor=NW)
-        self.view.master.update() #refresh page to update canvas frame
+        self.update_canvas_frame(frame)
 
