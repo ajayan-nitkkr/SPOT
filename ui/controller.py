@@ -35,11 +35,14 @@ class Controller:
         self.view.entry_video_path.configure(validate="key", validatecommand=(vcmd, '%P'))
         self.view.button_process.configure(command=self.process_video_frame)
 
+    # def initialize_center_frame_controller(self, frame):
+    #     print 'initialize centerframe controller'
+    #     self.view.canvas.bind("<Configure>", self.resize_frame_dimensions)
+
     def initialize_btm_frame_controller(self, frame):
         print 'initialize btmframe controller'
         self.view.combobox_video_white_hot.bind("<<ComboboxSelected>>", self.change_video_hot)
         self.view.combobox_video_border.bind("<<ComboboxSelected>>", self.change_video_border)
-
         self.dict_crop_info = {}
 
     def validate_video_path(self, new_text):
@@ -83,6 +86,9 @@ class Controller:
         if self.view.value_of_combobox_video_border == LABEL_NO:
             self.send_crop_info()
 
+    # def resize_frame_dimensions(self, event):
+
+
     ##new methods as per the previous app
     def init_client(self):
         global vh, local_vh
@@ -121,6 +127,7 @@ class Controller:
 
     def update_canvas_frame(self, frame):
         print 'get jpg image'
+        self.view.canvas.config(width=frame.shape[1], height=frame.shape[0])
         cv2image = cv2.cvtColor(frame, cv2.COLOR_BGR2RGBA)  # convert colors from BGR to RGBA
         self.view.current_frame = Image.fromarray(cv2image)
         self.view.canvas_photo = ImageTk.PhotoImage(image=self.view.current_frame)
