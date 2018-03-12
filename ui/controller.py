@@ -17,6 +17,10 @@ import start_local_client
 import cv2
 import time
 from string_values import *
+import os
+import eventlet
+import threading
+from threading import Thread
 
 
 class Controller:
@@ -26,6 +30,7 @@ class Controller:
         self.initialize_btm_frame_controller(self.view.btm_frame)
         # self.datacontroller = DataController(self)
         self.init_client()
+        self.timer_id = 0
 
     def initialize_top_frame_controller(self, frame):
         self.view.value_of_combobox_server = self.view.combobox_server.get()
@@ -89,7 +94,13 @@ class Controller:
             self.dict_crop_info[DICT_CROP_VIDEOHOT_KEY] = False
 
         if self.view.value_of_combobox_video_border == LABEL_NO:
-            self.send_crop_info()
+            # eventlet.spawn(self.display_loader)
+            # eventlet.spawn(self.send_crop_info)
+            # self.display_loader()
+            # self.send_crop_info()
+            self.stop_now = False
+            Thread(target=self.display_loader).start()
+            Thread(target=self.send_crop_info).start()
 
     def terminate_app(self):
         print('Terminating the SPOT app')
@@ -113,6 +124,42 @@ class Controller:
 
     def close_popup_window(self):
         self.view.popwin.destroy()
+
+    # def display_loader(self, n=0):
+    #     print('Displaying loader for now...')
+    #     print('pwd:',os.getcwd())
+    #     loader_image = 'ui/loader.gif'
+    #     self.view.loader_image_path = os.path.join(os.getcwd(), loader_image)
+    #     print('loader_image_path:', self.view.loader_image_path)
+    #     self.view.canvas_loader_image = PhotoImage(file=self.view.loader_image_path)
+    #     self.view.canvas.create_image(0, 0, image=self.view.canvas_loader_image, anchor=NW)
+    #     self.view.master.update()
+    #     # self.timer_id = self.view.master.after(100, self.display_loader, n + 1)
+
+    def display_loader(self):
+        frame = 0
+        while self.stop_now is False:
+            try:
+                # global photo
+                # global frame
+                # global label
+                loader_image = 'ui/loader.gif'
+                self.view.loader_image_path = os.path.join(os.getcwd(), loader_image)
+                print('loader_image_path:', self.view.loader_image_path)
+                self.view.canvas_loader_image = PhotoImage(
+                    file=self.view.loader_image_path,
+                    format="gif - {}".format(frame)
+                )
+
+                self.view.canvas.create_image(0, 0, image=self.view.canvas_loader_image, anchor=NW)
+                self.view.master.update()
+
+                frame = frame + 1
+
+            except Exception as e:
+                frame = 0
+                self.display_loader()
+                break
 
     ##new methods as per the previous app
     def init_client(self):
@@ -155,11 +202,17 @@ class Controller:
         self.view.current_frame = Image.fromarray(cv2image)
         self.view.canvas_photo = ImageTk.PhotoImage(image=self.view.current_frame)
         self.view.canvas.create_image(0, 0, image=self.view.canvas_photo, anchor=NW)
+
+        if self.timer_id > 0:
+            self.view.master.after_cancel(self.timer_id)
+            self.view.canvas.delete(ALL)
+
         self.view.master.update() # refresh page to update canvas frame
 
     def send_crop_info(self):
         global vh, local_vh, server_type
         print("sending crop info..")
+        # self.display_loader()
 
         # payload = json.loads(request.get_data().decode('utf-8'))
         self.dict_crop_info[DICT_CROP_CROPTOP_KEY] = 0;
@@ -184,5 +237,6 @@ class Controller:
 
     def callback(self, frame):
         print("updating new frame after callback from machine learning library...")
+        self.stop_now = True
         self.update_canvas_frame(frame)
 

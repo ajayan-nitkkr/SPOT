@@ -83,7 +83,7 @@ class View:
         self.text_video_path = ''
 
     def create_center_frame_widgets(self, frame):
-        # layout the widgets in the center frame
+        # layout the frames inside the center frame
         self.canvas = Canvas(frame, width=500, height=500, bg=COLOR_GRAY, highlightbackground=COLOR_GRAY)
         self.canvas.grid(row=0, column=0)
 
