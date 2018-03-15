@@ -139,6 +139,7 @@ def capture_and_tag(sess, net, preprocessDict, video, q, sleepTime, display, cal
             for _ in range(1):
                 cap.grab()
                 ret, frame = cap.retrieve()
+                callback_controller(frame)
 
                 # Exit if frames are over - no more input
                 if frame is None:
@@ -147,6 +148,8 @@ def capture_and_tag(sess, net, preprocessDict, video, q, sleepTime, display, cal
                 # Process frames
                 if invert:
                     frame = 255 - frame
+
+                callback_controller(frame)
 
                 scores_all, boxes_all = process(sess, net, frame)
 
@@ -187,6 +190,8 @@ def capture_and_tag(sess, net, preprocessDict, video, q, sleepTime, display, cal
                                 newDets = np.vstack((newDets, det))
                     else:
                         newDets = dets
+
+                    callback_controller(frame)
 
                     frame = vis_detections(frame, cls, newDets[1:], display, thresh=cfg.TEST.CONF_THRESH)
                     # file_name = file_path+str(i)+'.jpg'

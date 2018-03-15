@@ -1,9 +1,9 @@
 from Tkinter import *
 from view import View
-from datacontroller import DataController
-import numpy
+# from datacontroller import DataController
+# import numpy
 from PIL import ImageTk,Image
-import base64
+# import base64
 try:
     # Python2
     # import Tkinter as tk
@@ -18,9 +18,11 @@ import cv2
 import time
 from string_values import *
 import os
-import eventlet
-import threading
-from threading import Thread
+# import eventlet
+# import threading
+# from threading import Thread
+# import subprocess
+import skvideo.io
 
 
 class Controller:
@@ -97,10 +99,10 @@ class Controller:
             # eventlet.spawn(self.display_loader)
             # eventlet.spawn(self.send_crop_info)
             # self.display_loader()
-            # self.send_crop_info()
-            self.stop_now = False
-            Thread(target=self.display_loader).start()
-            Thread(target=self.send_crop_info).start()
+            self.send_crop_info()
+            # self.stop_now = False
+            # Thread(target=self.display_loader).start()
+            # Thread(target=self.send_crop_info).start()
 
     def terminate_app(self):
         print('Terminating the SPOT app')
@@ -145,13 +147,12 @@ class Controller:
                 # global label
                 loader_image = 'ui/loader.gif'
                 self.view.loader_image_path = os.path.join(os.getcwd(), loader_image)
-                print('loader_image_path:', self.view.loader_image_path)
                 self.view.canvas_loader_image = PhotoImage(
                     file=self.view.loader_image_path,
                     format="gif - {}".format(frame)
                 )
 
-                self.view.canvas.create_image(0, 0, image=self.view.canvas_loader_image, anchor=NW)
+                self.view.canvas.create_image(0, 0, image=self.view.canvas_loader_image, anchor=CENTER)
                 self.view.master.update()
 
                 frame = frame + 1
@@ -169,6 +170,8 @@ class Controller:
 
     def preprocess_video(self):
         # payload = json.loads(request.get_data().decode('utf-8'))
+        ###################
+        #################
         global vh, video_path, local_vh
         # try:
         #     video_path = int(payload['video_path'])
@@ -177,22 +180,36 @@ class Controller:
 
         video_path = self.view.text_video_path
 
-        # update video and app path in reomte client
-        vh.video_file = self.view.text_video_path
-        vh.app_path = self.view.text_video_path
+        # change path as per requirement to display live webcam frame
+        if video_path == '0' or video_path == '1':
+            video_path = int(video_path)
+
+        # update video and app path in remote client
+        # vh.video_file = self.view.text_video_path
+        # vh.app_path = self.view.text_video_path
 
         # update video and app path in local client
         local_vh.update_paths(video_path, None)
 
-        cap = cv2.VideoCapture(video_path)
-        # print cap.isOpened()
+        cap = cv2.VideoCapture(0)
+        print cap.isOpened()
+
         # print cv2.imread('frames/first.jpg')
-        ret, frame = cap.read()
-        curr = int(round(time.time() * 1000))
+        if cap.isOpened():
+            ret, frame = cap.read()
+            if frame is not None:
+                self.update_canvas_frame(frame)
+            else:
+                print ('No frame received!')
+        else:
+            ret = False
+        # curr = int(round(time.time() * 1000))
         # first_img = 'frames/first.jpg'
         # first_img_path = os.path.join('frames/', first_img)
         # cv2.imwrite('frames', frame)
-        self.update_canvas_frame(frame)
+
+        if video_path is '0' or '1':
+            cap.release()
 
         # return first_img + '?r=' + str(curr)
 
