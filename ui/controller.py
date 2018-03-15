@@ -163,10 +163,10 @@ class Controller:
         # update video and app path in local client
         local_vh.update_paths(video_path, None)
 
-        cap = cv2.VideoCapture(0)
+        self.cap = cv2.VideoCapture(video_path)
 
-        if cap.isOpened():
-            ret, frame = cap.read()
+        if self.cap.isOpened():
+            ret, frame = self.cap.read()
             if frame is not None:
                 self.update_canvas_frame(frame)
             else:
@@ -176,7 +176,7 @@ class Controller:
             print ('VideoCapture is not opened!')
 
         if video_path is '0':
-            cap.release()
+            self.cap.release()
 
         # return first_img + '?r=' + str(curr)
 
@@ -209,6 +209,7 @@ class Controller:
             """ TODO :initiate processing for local server """
             print("Initiating requests for local server")
             local_vh.update_crop_info(crop_info)
+            local_vh.update_video_capture_object(self.cap)
             start_local_client.start_video_client(self.callback)
 
         else:

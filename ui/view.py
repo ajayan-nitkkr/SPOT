@@ -51,7 +51,7 @@ class View:
 
         # create the widgets for the top frame
         self.label_server = Label(self.server_frame, text=LABEL_SERVER, bg=COLOR_GREEN)
-        self.combobox_server = ttk.Combobox(self.server_frame, values=(LABEL_LOCAL_SERVER, LABEL_REMOTE_SERVER), state="readonly")
+        self.combobox_server = ttk.Combobox(self.server_frame, values=(LABEL_LOCAL_SERVER), state="readonly")
         self.label_video_path = Label(self.video_path_frame, text=LABEL_VIDEO_PATH, bg=COLOR_GREEN)
         self.entry_video_path = Entry(self.video_path_frame)
         self.button_process = Button(frame, text=LABEL_PROCESS)

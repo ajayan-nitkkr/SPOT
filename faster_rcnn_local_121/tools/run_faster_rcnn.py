@@ -110,7 +110,7 @@ def parse_args():
 
     return args
 
-def capture_and_tag(sess, net, preprocessDict, video, q, sleepTime, display, callback_controller):
+def capture_and_tag(sess, net, preprocessDict, video, q, sleepTime, display, callback_controller, cap):
     """ Capture frames from video and tag bounding boxes """
     print("Capturing image frames..")
     print("[Press ctrl + C to quit]")
@@ -122,12 +122,13 @@ def capture_and_tag(sess, net, preprocessDict, video, q, sleepTime, display, cal
     cropTop = preprocessDict['cropTop']
     cropBottom = preprocessDict['cropBottom']
 
+    # TODO (Ajay): Have to check with Liz why these two VideoCapture objects were made here
     # Capture frames from video
-    cap = cv2.VideoCapture(video)
+    # cap = cv2.VideoCapture(video)
     ret, frame = cap.read()
 
     # Clear bottom text from frame
-    cap = cv2.VideoCapture(video)
+    # cap = cv2.VideoCapture(video)
     try:
 #        cv2.namedWindow('annotations', cv2.WINDOW_AUTOSIZE)
         prev_bb = None
@@ -139,7 +140,7 @@ def capture_and_tag(sess, net, preprocessDict, video, q, sleepTime, display, cal
             for _ in range(1):
                 cap.grab()
                 ret, frame = cap.retrieve()
-                callback_controller(frame)
+                # callback_controller(frame)
 
                 # Exit if frames are over - no more input
                 if frame is None:
@@ -149,7 +150,7 @@ def capture_and_tag(sess, net, preprocessDict, video, q, sleepTime, display, cal
                 if invert:
                     frame = 255 - frame
 
-                callback_controller(frame)
+                # callback_controller(frame)
 
                 scores_all, boxes_all = process(sess, net, frame)
 
@@ -191,7 +192,7 @@ def capture_and_tag(sess, net, preprocessDict, video, q, sleepTime, display, cal
                     else:
                         newDets = dets
 
-                    callback_controller(frame)
+                    # callback_controller(frame)
 
                     frame = vis_detections(frame, cls, newDets[1:], display, thresh=cfg.TEST.CONF_THRESH)
                     # file_name = file_path+str(i)+'.jpg'
@@ -219,7 +220,7 @@ def capture_and_tag(sess, net, preprocessDict, video, q, sleepTime, display, cal
         sess.close()
         sys.exit(1)		
 
-def main(preprocessDict, video, q, sleepTime, display, callback_controller):
+def main(preprocessDict, video, q, sleepTime, display, callback_controller, cap):
     cfg.TEST.HAS_RPN = True  # Use RPN for proposals
 
     #args = parse_args()
@@ -244,7 +245,7 @@ def main(preprocessDict, video, q, sleepTime, display, callback_controller):
     print('\n\nLoaded network {:s}'.format(modelLocation))
 
     # capture video and tag
-    capture_and_tag(sess, net, preprocessDict, video, q, sleepTime, display, callback_controller)
+    capture_and_tag(sess, net, preprocessDict, video, q, sleepTime, display, callback_controller, cap)
     #plt.show()
 
 if __name__ == '__main__':

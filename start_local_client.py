@@ -32,6 +32,10 @@ class LocalVideoClient(object):
         self.crop_info = crop_info
         print(self.crop_info)
 
+    def update_video_capture_object(self, cap):
+        self.cap = cap
+        # print(self.cap)
+
     def run(self, callback_controller):
         """ 
             Process the video at video_path
@@ -42,7 +46,7 @@ class LocalVideoClient(object):
         os.mkdir('results')
         print(" Starting processing video at " + str(self.video_path) + " on local server")
         print(self.crop_info)
-        faster_rcnn_local_121.tools.run_faster_rcnn.main(self.crop_info, self.video_path, self.q, self.sleep_time, self.display, callback_controller)
+        faster_rcnn_local_121.tools.run_faster_rcnn.main(self.crop_info, self.video_path, self.q, self.sleep_time, self.display, callback_controller, self.cap)
         #self.test_results() ## FOR TESTING PURPOSE
         print ("returned")
 
