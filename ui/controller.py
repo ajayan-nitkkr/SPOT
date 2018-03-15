@@ -21,8 +21,6 @@ import os
 # import eventlet
 # import threading
 # from threading import Thread
-# import subprocess
-import skvideo.io
 
 
 class Controller:
@@ -48,11 +46,6 @@ class Controller:
         self.dict_crop_info = {}
 
     def validate_video_path(self, new_text):
-        # print 'Video path:', new_text
-        # if not new_text:
-        #     self.text_video_path = ''
-        #     return True
-
         try:
             self.view.text_video_path = new_text
             return True
@@ -65,8 +58,6 @@ class Controller:
             print 'Please mention your video path'
         else:
             print 'Processing video at:', self.view.text_video_path
-            # video_frame_data = self.datacontroller.preprocess_video()
-            # self.get_frame()
             self.view.combobox_video_white_hot.configure(state='readonly')
             self.view.combobox_video_border.configure(state='readonly')
             # adding new code below
@@ -91,18 +82,12 @@ class Controller:
         print 'Video border option selected as:', self.view.value_of_combobox_video_border
         self.dict_crop_info[DICT_CROP_VIDEOBORDER_KEY] = self.view.value_of_combobox_video_border
 
-        # set deafault option for video hot if nothing selected there
+        # set default option for video hot if nothing selected there
         if DICT_CROP_VIDEOHOT_KEY not in self.dict_crop_info:
             self.dict_crop_info[DICT_CROP_VIDEOHOT_KEY] = False
 
         if self.view.value_of_combobox_video_border == LABEL_NO:
-            # eventlet.spawn(self.display_loader)
-            # eventlet.spawn(self.send_crop_info)
-            # self.display_loader()
             self.send_crop_info()
-            # self.stop_now = False
-            # Thread(target=self.display_loader).start()
-            # Thread(target=self.send_crop_info).start()
 
     def terminate_app(self):
         print('Terminating the SPOT app')
@@ -120,7 +105,6 @@ class Controller:
         b = Button(self.view.popwin, text="Yes", command=self.terminate_app)
         b.grid(row=1, column=0)
 
-        # b = Button(self.view.popwin, text="No", command=self.view.popwin.destroy)
         b = Button(self.view.popwin, text="No", command=self.close_popup_window)
         b.grid(row=1, column=1)
 
@@ -169,32 +153,18 @@ class Controller:
         local_vh = start_local_client.get_client()
 
     def preprocess_video(self):
-        # payload = json.loads(request.get_data().decode('utf-8'))
-        ###################
-        #################
         global vh, video_path, local_vh
-        # try:
-        #     video_path = int(payload['video_path'])
-        # except:
-        #     video_path = payload['video_path']
-
         video_path = self.view.text_video_path
 
         # change path as per requirement to display live webcam frame
-        if video_path == '0' or video_path == '1':
+        if video_path == '0':
             video_path = int(video_path)
-
-        # update video and app path in remote client
-        # vh.video_file = self.view.text_video_path
-        # vh.app_path = self.view.text_video_path
 
         # update video and app path in local client
         local_vh.update_paths(video_path, None)
 
         cap = cv2.VideoCapture(0)
-        print cap.isOpened()
 
-        # print cv2.imread('frames/first.jpg')
         if cap.isOpened():
             ret, frame = cap.read()
             if frame is not None:
@@ -203,12 +173,9 @@ class Controller:
                 print ('No frame received!')
         else:
             ret = False
-        # curr = int(round(time.time() * 1000))
-        # first_img = 'frames/first.jpg'
-        # first_img_path = os.path.join('frames/', first_img)
-        # cv2.imwrite('frames', frame)
+            print ('VideoCapture is not opened!')
 
-        if video_path is '0' or '1':
+        if video_path is '0':
             cap.release()
 
         # return first_img + '?r=' + str(curr)
@@ -231,7 +198,6 @@ class Controller:
         print("sending crop info..")
         # self.display_loader()
 
-        # payload = json.loads(request.get_data().decode('utf-8'))
         self.dict_crop_info[DICT_CROP_CROPTOP_KEY] = 0;
         self.dict_crop_info[DICT_CROP_CROPLEFT_KEY] = 0;
         self.dict_crop_info[DICT_CROP_CROPBOTTOM_KEY] = self.view.current_frame.height;
