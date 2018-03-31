@@ -21,6 +21,7 @@ import os
 # import eventlet
 # import threading
 # from threading import Thread
+import numpy as np
 
 
 class Controller:
@@ -136,7 +137,7 @@ class Controller:
                     format="gif - {}".format(frame)
                 )
 
-                self.view.canvas.create_image(0, 0, image=self.view.canvas_loader_image, anchor=CENTER)
+                self.view.right_canvas.create_image(0, 0, image=self.view.canvas_loader_image, anchor=CENTER)
                 self.view.master.update()
 
                 frame = frame + 1
@@ -168,7 +169,9 @@ class Controller:
         if self.cap.isOpened():
             ret, frame = self.cap.read()
             if frame is not None:
-                self.update_canvas_frame(frame)
+                original_frame_copy = np.copy(frame)
+                self.update_left_canvas_frame(frame)
+                self.update_right_canvas_frame(frame)
             else:
                 print ('No frame received!')
         else:
@@ -180,16 +183,29 @@ class Controller:
 
         # return first_img + '?r=' + str(curr)
 
-    def update_canvas_frame(self, frame):
-        self.view.canvas.config(width=frame.shape[1], height=frame.shape[0])
+    def update_left_canvas_frame(self, frame):
+        self.view.left_canvas.config(width=frame.shape[1], height=frame.shape[0])
         cv2image = cv2.cvtColor(frame, cv2.COLOR_BGR2RGBA)  # convert colors from BGR to RGBA
-        self.view.current_frame = Image.fromarray(cv2image)
-        self.view.canvas_photo = ImageTk.PhotoImage(image=self.view.current_frame)
-        self.view.canvas.create_image(0, 0, image=self.view.canvas_photo, anchor=NW)
+        self.view.left_frame = Image.fromarray(cv2image)
+        self.view.left_canvas_photo = ImageTk.PhotoImage(image=self.view.left_frame)
+        self.view.left_canvas.create_image(0, 0, image=self.view.left_canvas_photo, anchor=NW)
 
         if self.timer_id > 0:
             self.view.master.after_cancel(self.timer_id)
-            self.view.canvas.delete(ALL)
+            self.view.left_canvas.delete(ALL)
+
+        self.view.master.update() # refresh page to update canvas frame
+
+    def update_right_canvas_frame(self, frame):
+        self.view.right_canvas.config(width=frame.shape[1], height=frame.shape[0])
+        cv2image = cv2.cvtColor(frame, cv2.COLOR_BGR2RGBA)  # convert colors from BGR to RGBA
+        self.view.right_frame = Image.fromarray(cv2image)
+        self.view.right_canvas_photo = ImageTk.PhotoImage(image=self.view.right_frame)
+        self.view.right_canvas.create_image(0, 0, image=self.view.right_canvas_photo, anchor=NW)
+
+        if self.timer_id > 0:
+            self.view.master.after_cancel(self.timer_id)
+            self.view.right_canvas.delete(ALL)
 
         self.view.master.update() # refresh page to update canvas frame
 
@@ -200,8 +216,8 @@ class Controller:
 
         self.dict_crop_info[DICT_CROP_CROPTOP_KEY] = 0;
         self.dict_crop_info[DICT_CROP_CROPLEFT_KEY] = 0;
-        self.dict_crop_info[DICT_CROP_CROPBOTTOM_KEY] = self.view.current_frame.height;
-        self.dict_crop_info[DICT_CROP_CROPRIGHT_KEY] = self.view.current_frame.width;
+        self.dict_crop_info[DICT_CROP_CROPBOTTOM_KEY] = self.view.left_frame.height;
+        self.dict_crop_info[DICT_CROP_CROPRIGHT_KEY] = self.view.left_frame.width;
         crop_info = self.dict_crop_info
         server_type = self.view.value_of_combobox_server
 
@@ -210,7 +226,7 @@ class Controller:
             print("Initiating requests for local server")
             local_vh.update_crop_info(crop_info)
             local_vh.update_video_capture_object(self.cap)
-            start_local_client.start_video_client(self.callback)
+            start_local_client.start_video_client(self.callback_update_left_frame, self.callback_update_right_frame)
 
         else:
             """ Initiate processing for remote (Azure Advanced) server """
@@ -219,8 +235,13 @@ class Controller:
         print ("event finished")
         # return 'True'
 
-    def callback(self, frame):
+    def callback_update_left_frame(self, frame):
         print("updating new frame after callback from machine learning library...")
-        self.stop_now = True
-        self.update_canvas_frame(frame)
+        # self.stop_now = True
+        self.update_left_canvas_frame(frame)
+
+    def callback_update_right_frame(self, frame):
+        print("updating new frame after callback from machine learning library...")
+        # self.stop_now = True
+        self.update_right_canvas_frame(frame)
 

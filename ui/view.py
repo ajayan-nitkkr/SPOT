@@ -13,7 +13,7 @@ class View:
 
     def create_window(self, root):
         self.master = root
-        self.master.geometry('{}x{}'.format(1200, 700))
+        self.master.geometry('{}x{}'.format(1400, 1000))
         self.master.title(LABEL_SPOT)
         self.master.configure(background=COLOR_GRAY)
 
@@ -54,6 +54,8 @@ class View:
         self.combobox_server = ttk.Combobox(self.server_frame, values=(LABEL_LOCAL_SERVER), state="readonly")
         self.label_video_path = Label(self.video_path_frame, text=LABEL_VIDEO_PATH, bg=COLOR_GREEN)
         self.entry_video_path = Entry(self.video_path_frame)
+        # TODO: remove below line later, added just for testing
+        self.entry_video_path.insert(END, '/tf_serving_deployment/gui/demo.mp4')
         self.button_process = Button(frame, text=LABEL_PROCESS)
         self.button_terminate = Button(frame, text=LABEL_TERMINATE)
 
@@ -84,11 +86,15 @@ class View:
 
     def create_center_frame_widgets(self, frame):
         # layout the frames inside the center frame
-        self.canvas = Canvas(frame, width=500, height=500, bg=COLOR_GRAY, highlightbackground=COLOR_GRAY)
-        self.canvas.grid(row=0, column=0)
+        self.left_canvas = Canvas(frame, width=500, height=500, bg=COLOR_GRAY, highlightbackground=COLOR_GRAY)
+        self.left_canvas.grid(row=0, column=0)
+
+        self.right_canvas = Canvas(frame, width=500, height=500, bg=COLOR_GRAY, highlightbackground=COLOR_GRAY)
+        self.right_canvas.grid(row=0, column=1)
 
         # assign different weights to the widgets for relative size in the center frame
         frame.grid_columnconfigure(0, weight=1, uniform="foo")
+        frame.grid_columnconfigure(1, weight=1, uniform="foo")
 
     def create_btm_frame_widgets(self, frame):
         # create frames inside top frame

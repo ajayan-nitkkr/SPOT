@@ -110,7 +110,7 @@ def parse_args():
 
     return args
 
-def capture_and_tag(sess, net, preprocessDict, video, q, sleepTime, display, callback_controller, cap):
+def capture_and_tag(sess, net, preprocessDict, video, q, sleepTime, display, callback_controller_left, callback_controller_right, cap):
     """ Capture frames from video and tag bounding boxes """
     print("Capturing image frames..")
     print("[Press ctrl + C to quit]")
@@ -134,12 +134,24 @@ def capture_and_tag(sess, net, preprocessDict, video, q, sleepTime, display, cal
         prev_bb = None
         file_path = 'results/'
         i = 0
-        while(True):
+
+        cls = None
+        newDets = None
+        newDetsPoacherbk = None
+        while True:
             # Capture frame-by-frame, skip 1 frame
-            cap.grab()
+            # previously used to skip 1 frame, now making it skip 8 frames
+            for skip_frame_count in range(8):
+                cap.grab()
+                sample_ret, sample_frame = cap.retrieve()
+                if cls is not None and newDetsPoacherbk is not None:
+                    #TODO: change cls for all classes, currently it just takes the last cls
+                    sample_frame = vis_detections(sample_frame, 'poacher', newDetsPoacherbk, display, thresh=cfg.TEST.CONF_THRESH)
+                callback_controller_left(sample_frame)  
             for _ in range(1):
                 cap.grab()
                 ret, frame = cap.retrieve()
+                original_frame_copy = np.copy(frame)
                 # callback_controller(frame)
 
                 # Exit if frames are over - no more input
@@ -193,6 +205,10 @@ def capture_and_tag(sess, net, preprocessDict, video, q, sleepTime, display, cal
                         newDets = dets
 
                     # callback_controller(frame)
+                    if cls == 'poacher':
+                        newDetsPoacherbk = newDets[1:]
+                    elif cls == 'animal':
+                        newDetsAnimalbk = newDets[1:]
 
                     frame = vis_detections(frame, cls, newDets[1:], display, thresh=cfg.TEST.CONF_THRESH)
                     # file_name = file_path+str(i)+'.jpg'
@@ -201,7 +217,9 @@ def capture_and_tag(sess, net, preprocessDict, video, q, sleepTime, display, cal
                     # q.put(file_name)
 
                     # adding new code below (Ajay)
-                    callback_controller(frame)
+                    # callback_controller_left(original_frame_copy)
+                    callback_controller_right(frame)
+                    callback_controller_left(frame)
 
                     time.sleep(sleepTime)
                     
@@ -218,9 +236,13 @@ def capture_and_tag(sess, net, preprocessDict, video, q, sleepTime, display, cal
         cap.release()
         cv2.destroyAllWindows()
         sess.close()
-        sys.exit(1)		
+        sys.exit(1)
 
-def main(preprocessDict, video, q, sleepTime, display, callback_controller, cap):
+# def run_detection_for_all_classes():
+
+
+
+def main(preprocessDict, video, q, sleepTime, display, callback_controller_left, callback_controller_right, cap):
     cfg.TEST.HAS_RPN = True  # Use RPN for proposals
 
     #args = parse_args()
@@ -245,7 +267,8 @@ def main(preprocessDict, video, q, sleepTime, display, callback_controller, cap)
     print('\n\nLoaded network {:s}'.format(modelLocation))
 
     # capture video and tag
-    capture_and_tag(sess, net, preprocessDict, video, q, sleepTime, display, callback_controller, cap)
+    capture_and_tag(sess, net, preprocessDict, video, q, sleepTime, display,
+                    callback_controller_left, callback_controller_right, cap)
     #plt.show()
 
 if __name__ == '__main__':
