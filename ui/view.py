@@ -102,22 +102,30 @@ class View:
         video_hot_frame_style.configure('My.TFrame',background=COLOR_GREEN)
         self.video_hot_frame = ttk.Frame(frame, style='My.TFrame', padding=(3, 3, 3, 3))
         self.video_border_frame = ttk.Frame(frame, style='My.TFrame', padding=(3, 3, 3, 3))
+        self.video_detections_frame = ttk.Frame(frame, style='My.TFrame', padding=(3, 3, 3, 3))
 
         # create the widgets for the bottom frame
         self.label_video_white_hot= Label(self.video_hot_frame, text=LABEL_VIDEO_HOT, bg=COLOR_GREEN)
         self.combobox_video_white_hot = ttk.Combobox(self.video_hot_frame, values=(LABEL_YES, LABEL_NO), state="readonly")
         self.label_video_border = Label(self.video_border_frame, text=LABEL_VIDEO_BORDER, bg=COLOR_GREEN)
         self.combobox_video_border = ttk.Combobox(self.video_border_frame, values=(LABEL_YES, LABEL_NO), state="readonly")
+        self.label_video_detection = Label(self.video_detections_frame, text=LABEL_VIDEO_DETECTION, bg=COLOR_GREEN)
+        self.combobox_video_detection = ttk.Combobox(self.video_detections_frame, values=(LABEL_YES, LABEL_NO), state="readonly")
 
         # layout the frames inside the bottom frame
-        self.video_hot_frame.grid(row=0, column=0, sticky="nsew")
-        self.video_border_frame.grid(row=1, column=0, sticky="nsew")
+        self.video_detections_frame.grid(row=0, column=0, sticky="nsew")
+        self.video_hot_frame.grid(row=1, column=0, sticky="nsew")
+        self.video_border_frame.grid(row=2, column=0, sticky="nsew")
+
 
         # layout the widgets in the bottom frame
-        self.label_video_white_hot.grid(row=0, column=0, sticky="nsew")
-        self.combobox_video_white_hot.grid(row=0, column=1, sticky="nsew")
-        self.label_video_border.grid(row=1, column=0, sticky="nsew")
-        self.combobox_video_border.grid(row=1, column=1, sticky="nsew")
+        self.label_video_detection.grid(row=0, column=0, sticky="nsew")
+        self.combobox_video_detection.grid(row=0, column=1, sticky="nsew")
+        self.label_video_white_hot.grid(row=1, column=0, sticky="nsew")
+        self.combobox_video_white_hot.grid(row=1, column=1, sticky="nsew")
+        self.label_video_border.grid(row=2, column=0, sticky="nsew")
+        self.combobox_video_border.grid(row=2, column=1, sticky="nsew")
+
 
         # assign different weights to the widgets for relative size in the bottom frame
         frame.grid_columnconfigure(0, weight=1, uniform="foo")
@@ -126,7 +134,10 @@ class View:
         self.video_hot_frame.grid_columnconfigure(1, weight=1, uniform="foo")
         self.video_border_frame.grid_columnconfigure(0, weight=1, uniform="foo")
         self.video_border_frame.grid_columnconfigure(1, weight=1, uniform="foo")
+        self.video_detections_frame.grid_columnconfigure(0, weight=1, uniform="foo")
+        self.video_detections_frame.grid_columnconfigure(1, weight=1, uniform="foo")
 
         # disable combobox in the beginning
         self.combobox_video_white_hot.configure(state='disabled')
         self.combobox_video_border.configure(state='disabled')
+        self.combobox_video_detection.configure(state='disabled')

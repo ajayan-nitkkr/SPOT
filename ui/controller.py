@@ -44,7 +44,9 @@ class Controller:
     def initialize_btm_frame_controller(self, frame):
         self.view.combobox_video_white_hot.bind("<<ComboboxSelected>>", self.change_video_hot)
         self.view.combobox_video_border.bind("<<ComboboxSelected>>", self.change_video_border)
+        self.view.combobox_video_detection.bind("<<ComboboxSelected>>", self.change_video_detection)
         self.dict_crop_info = {}
+        self.view.value_of_combobox_video_detections = None
 
     def validate_video_path(self, new_text):
         try:
@@ -61,6 +63,7 @@ class Controller:
             print 'Processing video at:', self.view.text_video_path
             self.view.combobox_video_white_hot.configure(state='readonly')
             self.view.combobox_video_border.configure(state='readonly')
+            self.view.combobox_video_detection.configure(state='readonly')
             # adding new code below
             self.preprocess_video()
 
@@ -89,6 +92,10 @@ class Controller:
 
         if self.view.value_of_combobox_video_border == LABEL_NO:
             self.send_crop_info()
+
+    def change_video_detection(self, event):
+        self.view.value_of_combobox_video_detections = self.view.combobox_video_detection.get()
+        print 'Video detection selected as:', self.view.value_of_combobox_video_detections
 
     def terminate_app(self):
         print('Terminating the SPOT app')
@@ -226,7 +233,11 @@ class Controller:
             print("Initiating requests for local server")
             local_vh.update_crop_info(crop_info)
             local_vh.update_video_capture_object(self.cap)
-            start_local_client.start_video_client(self.callback_update_left_frame, self.callback_update_right_frame)
+            if self.view.value_of_combobox_video_detections is None:
+                self.view.value_of_combobox_video_detections = LABEL_YES
+            start_local_client.start_video_client(self.callback_update_left_frame,
+                                                  self.callback_update_right_frame,
+                                                  self.view.value_of_combobox_video_detections)
 
         else:
             """ Initiate processing for remote (Azure Advanced) server """

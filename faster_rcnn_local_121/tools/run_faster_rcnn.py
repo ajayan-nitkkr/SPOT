@@ -110,7 +110,8 @@ def parse_args():
 
     return args
 
-def capture_and_tag(sess, net, preprocessDict, video, q, sleepTime, display, callback_controller_left, callback_controller_right, cap):
+def capture_and_tag(sess, net, preprocessDict, video, q, sleepTime, display,
+                    callback_controller_left, callback_controller_right, cap, detection_bool):
     """ Capture frames from video and tag bounding boxes """
     print("Capturing image frames..")
     print("[Press ctrl + C to quit]")
@@ -143,11 +144,12 @@ def capture_and_tag(sess, net, preprocessDict, video, q, sleepTime, display, cal
             # previously used to skip 1 frame, now making it skip 8 frames
             for skip_frame_count in range(8):
                 cap.grab()
-                sample_ret, sample_frame = cap.retrieve()
-                if cls is not None and newDetsPoacherbk is not None:
-                    #TODO: change cls for all classes, currently it just takes the last cls
-                    sample_frame = vis_detections(sample_frame, 'poacher', newDetsPoacherbk, display, thresh=cfg.TEST.CONF_THRESH)
-                callback_controller_left(sample_frame)  
+                if detection_bool == 'No':
+                    sample_ret, sample_frame = cap.retrieve()
+                    if cls is not None and newDetsPoacherbk is not None:
+                        #TODO: change cls for all classes, currently it just takes the last cls
+                        sample_frame = vis_detections(sample_frame, 'poacher', newDetsPoacherbk, display, thresh=cfg.TEST.CONF_THRESH)
+                    callback_controller_left(sample_frame)
             for _ in range(1):
                 cap.grab()
                 ret, frame = cap.retrieve()
@@ -242,7 +244,7 @@ def capture_and_tag(sess, net, preprocessDict, video, q, sleepTime, display, cal
 
 
 
-def main(preprocessDict, video, q, sleepTime, display, callback_controller_left, callback_controller_right, cap):
+def main(preprocessDict, video, q, sleepTime, display, callback_controller_left, callback_controller_right, cap, detection_bool):
     cfg.TEST.HAS_RPN = True  # Use RPN for proposals
 
     #args = parse_args()
@@ -268,7 +270,7 @@ def main(preprocessDict, video, q, sleepTime, display, callback_controller_left,
 
     # capture video and tag
     capture_and_tag(sess, net, preprocessDict, video, q, sleepTime, display,
-                    callback_controller_left, callback_controller_right, cap)
+                    callback_controller_left, callback_controller_right, cap, detection_bool)
     #plt.show()
 
 if __name__ == '__main__':
