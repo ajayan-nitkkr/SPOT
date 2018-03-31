@@ -111,7 +111,7 @@ def parse_args():
     return args
 
 def capture_and_tag(sess, net, preprocessDict, video, q, sleepTime, display,
-                    callback_controller_left, callback_controller_right, cap, detection_bool):
+                    callback_controller_left, cap, detection_bool):
     """ Capture frames from video and tag bounding boxes """
     print("Capturing image frames..")
     print("[Press ctrl + C to quit]")
@@ -220,7 +220,7 @@ def capture_and_tag(sess, net, preprocessDict, video, q, sleepTime, display,
 
                     # adding new code below (Ajay)
                     # callback_controller_left(original_frame_copy)
-                    callback_controller_right(frame)
+                    # callback_controller_right(frame)
                     callback_controller_left(frame)
 
                     time.sleep(sleepTime)
@@ -244,7 +244,7 @@ def capture_and_tag(sess, net, preprocessDict, video, q, sleepTime, display,
 
 
 
-def main(preprocessDict, video, q, sleepTime, display, callback_controller_left, callback_controller_right, cap, detection_bool):
+def main(preprocessDict, video, q, sleepTime, display, callback_controller_left, cap, detection_bool):
     cfg.TEST.HAS_RPN = True  # Use RPN for proposals
 
     #args = parse_args()
@@ -270,7 +270,7 @@ def main(preprocessDict, video, q, sleepTime, display, callback_controller_left,
 
     # capture video and tag
     capture_and_tag(sess, net, preprocessDict, video, q, sleepTime, display,
-                    callback_controller_left, callback_controller_right, cap, detection_bool)
+                    callback_controller_left, cap, detection_bool)
     #plt.show()
 
 if __name__ == '__main__':

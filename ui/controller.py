@@ -144,7 +144,8 @@ class Controller:
                     format="gif - {}".format(frame)
                 )
 
-                self.view.right_canvas.create_image(0, 0, image=self.view.canvas_loader_image, anchor=CENTER)
+                # self.view.right_canvas.create_image(0, 0, image=self.view.canvas_loader_image, anchor=CENTER)
+                self.view.left_canvas.create_image(0, 0, image=self.view.canvas_loader_image, anchor=CENTER)
                 self.view.master.update()
 
                 frame = frame + 1
@@ -178,7 +179,7 @@ class Controller:
             if frame is not None:
                 original_frame_copy = np.copy(frame)
                 self.update_left_canvas_frame(frame)
-                self.update_right_canvas_frame(frame)
+                # self.update_right_canvas_frame(frame)
             else:
                 print ('No frame received!')
         else:
@@ -203,18 +204,18 @@ class Controller:
 
         self.view.master.update() # refresh page to update canvas frame
 
-    def update_right_canvas_frame(self, frame):
-        self.view.right_canvas.config(width=frame.shape[1], height=frame.shape[0])
-        cv2image = cv2.cvtColor(frame, cv2.COLOR_BGR2RGBA)  # convert colors from BGR to RGBA
-        self.view.right_frame = Image.fromarray(cv2image)
-        self.view.right_canvas_photo = ImageTk.PhotoImage(image=self.view.right_frame)
-        self.view.right_canvas.create_image(0, 0, image=self.view.right_canvas_photo, anchor=NW)
-
-        if self.timer_id > 0:
-            self.view.master.after_cancel(self.timer_id)
-            self.view.right_canvas.delete(ALL)
-
-        self.view.master.update() # refresh page to update canvas frame
+    # def update_right_canvas_frame(self, frame):
+    #     self.view.right_canvas.config(width=frame.shape[1], height=frame.shape[0])
+    #     cv2image = cv2.cvtColor(frame, cv2.COLOR_BGR2RGBA)  # convert colors from BGR to RGBA
+    #     self.view.right_frame = Image.fromarray(cv2image)
+    #     self.view.right_canvas_photo = ImageTk.PhotoImage(image=self.view.right_frame)
+    #     self.view.right_canvas.create_image(0, 0, image=self.view.right_canvas_photo, anchor=NW)
+    #
+    #     if self.timer_id > 0:
+    #         self.view.master.after_cancel(self.timer_id)
+    #         self.view.right_canvas.delete(ALL)
+    #
+    #     self.view.master.update() # refresh page to update canvas frame
 
     def send_crop_info(self):
         global vh, local_vh, server_type
@@ -236,7 +237,6 @@ class Controller:
             if self.view.value_of_combobox_video_detections is None:
                 self.view.value_of_combobox_video_detections = LABEL_YES
             start_local_client.start_video_client(self.callback_update_left_frame,
-                                                  self.callback_update_right_frame,
                                                   self.view.value_of_combobox_video_detections)
 
         else:
@@ -251,8 +251,8 @@ class Controller:
         # self.stop_now = True
         self.update_left_canvas_frame(frame)
 
-    def callback_update_right_frame(self, frame):
-        print("updating new frame after callback from machine learning library...")
-        # self.stop_now = True
-        self.update_right_canvas_frame(frame)
+    # def callback_update_right_frame(self, frame):
+    #     print("updating new frame after callback from machine learning library...")
+    #     # self.stop_now = True
+    #     self.update_right_canvas_frame(frame)
 
