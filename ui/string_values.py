@@ -9,7 +9,6 @@ LABEL_REMOTE_SERVER = 'Remote'
 LABEL_YES = 'Yes'
 LABEL_NO = 'No'
 LABEL_TERMINATE = 'Terminate'
-LABEL_VIDEO_DETECTION = 'Which video frames do you want to display?'
 LABEL_VIDEO_DETECTION = 'Do you want video frames only when detected?'
 
 COLOR_GREEN = 'green'
